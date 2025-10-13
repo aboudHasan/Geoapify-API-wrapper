@@ -1,0 +1,85 @@
+const apiKey = process.env.API_KEY;
+const apiUrl = `https://api.geoapify.com/v2/places?categories=commercial&apiKey=${apiKey}`;
+
+async function radiusAPI(lat1, long1, radius, limit) {
+  try {
+    const res = await fetch(
+      apiUrl +
+        `&filter=circle:${long1},${lat1},${radius}&bias=proximity:${long1},${lat1}&limit=${limit}`
+    );
+
+    if (!res.ok) {
+      throw new Error(`API Error: ${res.status}`);
+    }
+
+    const places = res.json();
+    return places;
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function rectAPI(lat1, long1, lat2, long2, limit) {
+  centerLong = (long1 + long2) / 2;
+  centerLat = (lat1 + lat2) / 2;
+  try {
+    const res = await fetch(
+      apiUrl +
+        `&filter=rect:${long1},${lat1},${long2},${lat2}
+      &bias=proximity:${centerLong},${centerLat}
+      &limit=${limit}`
+    );
+
+    if (!res.ok) {
+      throw new Error(`API Error: ${res.status}`);
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+export const fetchRadius = async (req, res, next) => {
+  try {
+    const { lat1, long1, radius, limit } = req.query;
+    if (!lat1 || !long1) {
+      const error = new Error("Must include one latitude and longitude value");
+      error.status = 400;
+      return next(error);
+    }
+    if (!radius) {
+      const error = new Error("Must include radius");
+      error.status = 400;
+      return next(error);
+    }
+    if (radius <= 0) {
+      const error = new Error("Radius must be greater than 0");
+      error.status = 400;
+      return next(error);
+    }
+
+    const limitNum = limit ? limit : 50;
+
+    const places = await radiusAPI(lat1, long1, radius, limitNum);
+    res.status(200).json(places);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const fetchRect = async (req, res, next) => {
+  try {
+    const { lat1, long1, lat2, long2, limit } = req.query;
+    if (!lat1 || !long1 || !lat2 || !long2) {
+      const error = new Error("Must include two latitude and longitude values");
+      error.status = 400;
+      return next(error);
+    }
+
+    const limitNum = limit ? limit : 50;
+
+    const places = await rectAPI(lat1, long1, lat2, long2, limitNum);
+    res.status(200).json(places);
+  } catch (error) {
+    next(error);
+  }
+};
