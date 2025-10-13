@@ -10,7 +10,15 @@ app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}\nhttp://localhost:${port}`);
-  console.log(`IMPORTANT INFO ABOUT RESPONSE OBJECT
+  console.log(`IMPORTANT INFO ABOUT QUERYING AND RESPONSE OBJECT
+    typically it goes latitude longitude, like x then y, but geoapify api does it reverse for some reason
+
+    To query this api, just do this
+    <url>/radius?long1=num&lat1=num&radius=num&limit=num (retrieving in a radius example)
+    ofc replace num with actual numbers, and limit is also an optional query, i've set the default to 50 places
+
+    my direct example: http://localhost:8080/radius?long1=-79.890102&lat1=43.219215&radius=1000&limit=10
+   
     
     I recommend using postman to test this api, and then pasting the response object into a json formatter to see for yourself how the tree looks, but otherwise I will try to explain where to find key information below.
     
