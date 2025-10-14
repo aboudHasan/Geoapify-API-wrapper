@@ -12,29 +12,31 @@ async function radiusAPI(lat1, long1, radius, limit) {
       throw new Error(`API Error: ${res.status}`);
     }
 
-    const places = res.json();
+    const places = await res.json();
     return places;
   } catch (error) {
-    next(error);
+    console.log("Failed to fetch by radius");
+    throw error;
   }
 }
 
 async function rectAPI(lat1, long1, lat2, long2, limit) {
-  centerLong = (long1 + long2) / 2;
-  centerLat = (lat1 + lat2) / 2;
+  const centerLong = (long1 + long2) / 2;
+  const centerLat = (lat1 + lat2) / 2;
   try {
     const res = await fetch(
       apiUrl +
-        `&filter=rect:${long1},${lat1},${long2},${lat2}
-      &bias=proximity:${centerLong},${centerLat}
-      &limit=${limit}`
+        `&filter=rect:${long1},${lat1},${long2},${lat2}&bias=proximity:${centerLong},${centerLat}&limit=${limit}`
     );
-
     if (!res.ok) {
       throw new Error(`API Error: ${res.status}`);
     }
+
+    const places = await res.json();
+    return places;
   } catch (error) {
-    next(error);
+    console.log("Failed to fetch by bounding box");
+    throw error;
   }
 }
 
@@ -68,7 +70,11 @@ export const fetchRadius = async (req, res, next) => {
 
 export const fetchRect = async (req, res, next) => {
   try {
-    const { lat1, long1, lat2, long2, limit } = req.query;
+    const lat1 = Number(req.query.lat1);
+    const long1 = Number(req.query.long1);
+    const lat2 = Number(req.query.lat2);
+    const long2 = Number(req.query.long2);
+    const limit = Number(req.query.limit);
     if (!lat1 || !long1 || !lat2 || !long2) {
       const error = new Error("Must include two latitude and longitude values");
       error.status = 400;
