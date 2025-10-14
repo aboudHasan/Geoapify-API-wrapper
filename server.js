@@ -37,5 +37,10 @@ app.listen(port, () => {
     In order to access each of the properties i just mentioned in the paragraph above, it would be located at
     Object.features[i].properties.<property name>
     
-    Sorry this isn't formatted. After I commit this, I'm gonna start planning the enemies part.`);
+    you can request the binary data at
+    <url>/tile-data?x=<x value>&y=<y value>
+    
+    i believe it will just serve the raw binary data, you may have to modify your headers in your request
+    if you're having problems, try changing one of your headers in your get request, specifically
+    Content-Type: application/x-protobuf`);
 });
