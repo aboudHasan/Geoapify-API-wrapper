@@ -14,14 +14,14 @@ app.listen(port, () => {
     typically it goes latitude longitude, like x then y, but geoapify api does it reverse for some reason
 
     To query this api, just do this
-    <url>/radius?long1=num&lat1=num&radius=num&limit=num (retrieving in a radius example)
+    <url>/name?place=<place name>&limit=<num>&category=<category_name>
     ofc replace num with actual numbers, and limit is also an optional query, i've set the default to 50 places
+    (make sure you encode URL components so you have "%20" instead of just " ")
 
     must include category now
 
-    my direct example: http://localhost:8080/radius?long1=-79.890102&lat1=43.219215&radius=1000&limit=10&category=commercial
-   
-    
+    my direct example: http://localhost:8080/name?place=Hamilton%20Ontario&limit=100&category=commercial
+    my direct example: http://localhost:8080/bbox?place=Toronto%2COntario&limit=100&category=leisure
     I recommend using postman to test this api, and then pasting the response object into a json formatter to see for yourself how the tree looks, but otherwise I will try to explain where to find key information below.
     
     All the places will be listed in an array of 'features' (just how the geoapify api works).
