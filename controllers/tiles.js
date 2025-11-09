@@ -4,7 +4,7 @@ import { latLonToTileXY } from "../utils/mercator.js";
 
 const apiKey = process.env.TILE_KEY;
 
-async function getTileBinary(x, y, zoom = 12) {
+async function getTileBinary(x, y, zoom = 14) {
   try {
     const apiURL = `https://api.maptiler.com/tiles/v3-openmaptiles/${zoom}/${x}/${y}.pbf?key=${apiKey}`;
 

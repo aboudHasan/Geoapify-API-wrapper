@@ -25,8 +25,7 @@ function degToRad(degrees) {
  * @returns {{x: number, y: number}} An object containing the integer tile coordinates {x, y}.
  */
 export const latLonToTileXY = (latitude, longitude) => {
-  // Use a fixed zoom level of 12 as requested
-  const zoomLevel = 12;
+  const zoomLevel = 14;
 
   // 1. Clamp latitude to the valid Mercator range
   const clamped_lat = clamp(latitude, -85.05112878, 85.05112878);
