@@ -1,9 +1,9 @@
 import { convertPlace } from "./convertPlace.js";
 
 const apiKey = process.env.API_KEY;
-const apiUrl = `https://api.geoapify.com/v2/places?apiKey=${apiKey}`;
+const apiUrl = `https://api.geoapify.com/v2/places?apiKey=${apiKey}&limit=500`;
 
-async function getPOIsByBBox(place, limit, category) {
+async function getPOIsByBBox(place, categories) {
   try {
     const placeInformation = await convertPlace(place);
 
@@ -14,7 +14,7 @@ async function getPOIsByBBox(place, limit, category) {
 
     const res = await fetch(
       apiUrl +
-        `&filter=rect:${lon1},${lat1},${lon2},${lat2}&categories=${category}&limit=${limit}`
+        `&filter=rect:${lon1},${lat1},${lon2},${lat2}&categories=${categories}`
     );
     if (!res.ok) {
       throw new Error(`API Error: ${res.status}, ${res.statusText}`);
@@ -30,7 +30,7 @@ async function getPOIsByBBox(place, limit, category) {
   }
 }
 
-async function getPOIsByName(place, limit, category) {
+async function getPOIsByName(place, categories) {
   try {
     const placeInformation = await convertPlace(place);
 
@@ -39,7 +39,7 @@ async function getPOIsByName(place, limit, category) {
     const centerLat = placeInformation.results[0].lat;
 
     const res = await fetch(
-      apiUrl + `&filter=place:${placeid}&categories=${category}&limit=${limit}`
+      apiUrl + `&filter=place:${placeid}&categories=${categories}`
     );
     if (!res.ok) {
       throw new Error(`API Error: ${res.status}, ${res.statusText}`);
@@ -99,26 +99,23 @@ const applyGridThinning = (rawPlaces, centerLat, gridSizeInMeters) => {
 
 export const fetchByBBox = async (req, res, next) => {
   try {
-    const { place, limit, category } = req.query;
+    const { place, categories } = req.query;
 
     if (!place) {
       const error = new Error("Must include a place name");
       error.status = 400;
       throw error;
     }
-    if (!category) {
-      const error = new Error("Must include a category");
+    if (!categories) {
+      const error = new Error("Must include a categories");
       error.status = 400;
       throw error;
     }
 
-    const limitNum = limit ? limit : 50;
-
     // Get the raw places AND the center latitude for thinning
     const { places: rawPlaces, centerLat } = await getPOIsByBBox(
       place,
-      limitNum,
-      category
+      categories
     );
 
     // Apply 50-meter grid thinning
@@ -132,25 +129,22 @@ export const fetchByBBox = async (req, res, next) => {
 
 export const fetchByName = async (req, res, next) => {
   try {
-    const { place, limit, category } = req.query;
+    const { place, categories } = req.query;
     if (!place) {
       const error = new Error("Must include a place name");
       error.status = 400;
       throw error;
     }
-    if (!category) {
-      const error = new Error("Must include a category");
+    if (!categories) {
+      const error = new Error("Must include categories");
       error.status = 400;
       throw error;
     }
 
-    const limitNum = limit ? limit : 50;
-
     // Get the raw places AND the center latitude for thinning
     const { places: rawPlaces, centerLat } = await getPOIsByName(
       place,
-      limitNum,
-      category
+      categories
     );
 
     // Apply 50-meter grid thinning
