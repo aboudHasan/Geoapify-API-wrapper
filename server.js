@@ -41,6 +41,9 @@ app.listen(port, () => {
     
     you can request the binary data at
     <url>/tile-data?x=<x value>&y=<y value>
+
+    better tile data is at
+    <url>/tiles-by-place?place=<place-name>
     
     i believe it will just serve the raw binary data, you may have to modify your headers in your request
     if you're having problems, try changing one of your headers in your get request, specifically
