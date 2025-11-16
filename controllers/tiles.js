@@ -87,7 +87,6 @@ export const fetchTilesByPlace = async (req, res, next) => {
       throw err;
     });
 
-    // Fetch all tiles and add them to the archive
     const tilePromises = [];
     for (let x = minX; x <= maxX; x++) {
       for (let y = minY; y <= maxY; y++) {
@@ -104,7 +103,6 @@ export const fetchTilesByPlace = async (req, res, next) => {
       }
     }
 
-    // Wait for all tiles to be fetched
     await Promise.all(tilePromises);
 
     await archive.finalize();

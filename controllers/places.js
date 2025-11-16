@@ -81,8 +81,9 @@ const applyGridThinning = (rawPlaces, centerLat, gridSizeInMeters) => {
   for (const feature of rawPlaces.features) {
     const [lon, lat] = feature.geometry.coordinates;
 
-    const cellX = Math.floor(lon / lonGridSize);
-    const cellY = Math.floor(lat / latGridSize);
+    const cellX = Math.floor((lon + 180) / lonGridSize);
+    const cellY = Math.floor((lat + 90) / latGridSize);
+
     const cellId = `${cellX},${cellY}`;
 
     if (!occupiedCells.has(cellId)) {
