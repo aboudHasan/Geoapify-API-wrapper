@@ -57,3 +57,10 @@ export const latLonToTileXY = (latitude, longitude) => {
     y: Math.floor(y_tile_float),
   };
 };
+
+export const pickRandomFromBbox = (lat1, lon1, lat2, lon2) => {
+  const randomLat = Math.random() * (lat2 - lat1) + lat1;
+  const randomLon = Math.random() * (lon2 - lon1) + lon1;
+
+  return { randomLat: randomLat, randomLon: randomLon };
+};
