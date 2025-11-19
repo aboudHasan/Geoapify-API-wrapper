@@ -1,9 +1,32 @@
 import express from "express";
 import errorHandler from "./middleware/error.js";
 import router from "./routes/router.js";
+import WebSocket, { WebSocketServer } from "ws";
 
 const port = process.env.PORT || 5000;
 const app = express();
+const wss = new WebSocketServer({ port: 6767 });
+
+wss.on("connection", (ws) => {
+  wss.clients.forEach((client) => {
+    if (client !== ws && client.readyState === WebSocket.OPEN) {
+      client.send("New client connected");
+      console.log(`New client, ${ws}`);
+    }
+  });
+  ws.on("error", (error) => {
+    console.log(`error: ${error}`);
+  });
+  ws.on("message", (message) => {
+    wss.clients.forEach((client) => {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        console.log(`New message, ${message}`);
+        client.send(message);
+      }
+    });
+  });
+});
+
 app.use(express.json());
 app.use("/", router);
 app.use(errorHandler);
@@ -20,8 +43,8 @@ app.listen(port, () => {
 
     must include category now
 
-    my direct example: http://localhost:8080/name?place=Hamilton%20Ontario&limit=100&category=commercial
-    my direct example: http://localhost:8080/bbox?place=Toronto%2COntario&limit=100&category=leisure
+    my direct example: http://localhost:8080/name?place=Hamilton%20Ontario&limit=100&categories=commercial
+    my direct example: http://localhost:8080/bbox?place=Toronto%2COntario&limit=100&categories=leisure
     I recommend using postman to test this api, and then pasting the response object into a json formatter to see for yourself how the tree looks, but otherwise I will try to explain where to find key information below.
     
     All the places will be listed in an array of 'features' (just how the geoapify api works).
