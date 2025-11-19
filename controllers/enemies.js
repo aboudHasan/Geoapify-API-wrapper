@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 
 class EnemyTile {
-  constructor(extent = 4096, enemyCount = 100, enemyRespawnTime = 0.1) {
+  constructor(extent = 4096, enemyCount = 100, enemyRespawnTime = 30) { // enemyRespawnTime is in minutes
     this.extent = extent;
     this.expiryTime = Date.now() + enemyRespawnTime * 60 * 1000;
     this.enemies = Array.from({ length: enemyCount }, () => ({
