@@ -7,20 +7,25 @@ const port = process.env.PORT || 5000;
 const app = express();
 const wss = new WebSocketServer({ port: 6767 });
 
-wss.on("connection", (ws) => {
+wss.on("connection", (ws, req) => {
+  const parameters = new URL(req.url, "http://localhost").searchParams;
+  ws.id = parameters.get("user");
+
   wss.clients.forEach((client) => {
-    if (client !== ws && client.readyState === WebSocket.OPEN) {
+    if (client.readyState === WebSocket.OPEN) {
       client.send("New client connected");
-      console.log(`New client, ${ws}`);
+      console.log(`New client ${ws.id}`);
     }
   });
+
   ws.on("error", (error) => {
     console.log(`error: ${error}`);
   });
+
   ws.on("message", (message) => {
     wss.clients.forEach((client) => {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        console.log(`New message, ${message}`);
+      if (client.readyState === WebSocket.OPEN) {
+        console.log(`New message from ${ws.id}, ${message}`);
         client.send(message);
       }
     });
