@@ -1,11 +1,13 @@
 import express from "express";
+import http from "http";
 import errorHandler from "./middleware/error.js";
 import router from "./routes/router.js";
 import WebSocket, { WebSocketServer } from "ws";
 
 const port = process.env.PORT || 5000;
 const app = express();
-const wss = new WebSocketServer({ port: 6767 });
+const server = http.createServer(app);
+const wss = new WebSocketServer({ server: server });
 
 wss.on("connection", (ws, req) => {
   const parameters = new URL(req.url, "http://localhost").searchParams;
@@ -36,7 +38,7 @@ app.use(express.json());
 app.use("/", router);
 app.use(errorHandler);
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Listening on port ${port}\nhttp://localhost:${port}`);
   console.log(`IMPORTANT INFO ABOUT QUERYING AND RESPONSE OBJECT
     typically it goes latitude longitude, like x then y, but geoapify api does it reverse for some reason
