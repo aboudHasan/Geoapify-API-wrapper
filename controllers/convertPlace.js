@@ -35,7 +35,7 @@ export const convertCoords = async (req, res, next) => {
     }
 
     let placeInformation = await fetch(
-      `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lon}&format=json&apiKey=${apiKey}`
+      `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lon}&type=city&lang=en&format=json&apiKey=${apiKey}`
     );
 
     if (!placeInformation.ok) {
