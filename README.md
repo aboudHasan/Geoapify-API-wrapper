@@ -1,10 +1,17 @@
-To get this setup:
+web server for gps rpg
 
-1. clone the repo
-2. make sure you're in the gamejam directory. run npm install
-3. touch .env
-4. add these two lines in .env
-5. PORT="your desired port number"
-6. API_KEY="your api key here"
-7. then run npm run dev
-ezpz
+serves zip file of tile vector art binaries
+
+serves points of interest in json
+
+serves enemies, but it's up to clients to request enemies when they're expired
+
+endpoints for reverse geocoding, has built in forward geocoding
+
+function to convert from lat lon to web mercator projection (x and y tiles)
+
+uses ws to have global chat
+
+also has legacy logic for enemies
+
+apis used: geoapify for points of interest, openmaptiles (via cloud.maptiler) for vector art for mapview
