@@ -1,5 +1,5 @@
 import { pickRandomFromBbox } from "./mercator.js";
-import Enemy from "./enemy.js";
+import Enemy from "./legacy_enemy.js";
 
 const enemies = new Map();
 
