@@ -16,7 +16,7 @@ wss.on("connection", (ws, req) => {
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
       client.send("New client connected");
-      console.log(`New client ${ws.id}`);
+      console.log(`New client ${ws}`);
     }
   });
 
@@ -27,8 +27,8 @@ wss.on("connection", (ws, req) => {
   ws.on("message", (message) => {
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        console.log(`New message from ${ws.id}, ${message}`);
-        client.send(`New message from ${ws.id}, ${message}`);
+        console.log(`New message - ${message}`);
+        client.send(`${message}`);
       }
     });
   });
