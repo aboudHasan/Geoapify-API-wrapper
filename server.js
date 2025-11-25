@@ -25,12 +25,26 @@ wss.on("connection", (ws, req) => {
   });
 
   ws.on("message", (message) => {
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        console.log(`New message - ${message}`);
-        client.send(`${message}`);
-      }
-    });
+    if (message == "/reset") {
+      wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(`DezuraCaptainNoob`);
+        }
+      });
+    } else if (message == "/tux") {
+      wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(`TuxModeActivate`);
+        }
+      });
+    } else {
+      wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+          console.log(`New message - ${message}`);
+          client.send(`${message}`);
+        }
+      });
+    }
   });
 });
 

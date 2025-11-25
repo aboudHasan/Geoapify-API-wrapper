@@ -10,7 +10,12 @@ const enemyOdds = () => {
 };
 
 class EnemyTile {
-  constructor(extent = 4096, enemyCount = 75, enemyRespawnTime = 30) {
+  constructor(
+    extent = 4096,
+    enemyCount = 75,
+    enemyRespawnTime = 30,
+    tuxMode = false
+  ) {
     this.extent = extent;
     this.expiryTime = Date.now() + enemyRespawnTime * 60 * 1000;
     this.enemies = Array.from({ length: enemyCount }, () => ({
@@ -19,6 +24,10 @@ class EnemyTile {
       y: Math.floor(Math.random() * (extent + 1)),
       enemyType: enemyOdds(),
     }));
+
+    if (tuxMode) {
+      this.enemyType = 3;
+    }
   }
 
   isExpired() {
@@ -30,7 +39,7 @@ const trackedPlaces = new Map();
 
 export const getEnemiesFromTile = async (req, res, next) => {
   try {
-    let { place } = req.query;
+    let { place, tuxMode } = req.query;
 
     if (!place) {
       const error = new Error("Please include place query parameters");
@@ -65,7 +74,11 @@ export const getEnemiesFromTile = async (req, res, next) => {
           !cityTilesMap.has(tileKey) ||
           cityTilesMap.get(tileKey).isExpired()
         ) {
-          cityTilesMap.set(tileKey, new EnemyTile());
+          if (tuxMode) {
+            cityTilesMap.set(tileKey, new EnemyTile(4096, 75, 30, true));
+          } else {
+            cityTilesMap.set(tileKey, new EnemyTile());
+          }
         }
 
         const tile = cityTilesMap.get(tileKey);
