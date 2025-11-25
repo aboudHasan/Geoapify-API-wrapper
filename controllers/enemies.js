@@ -2,15 +2,22 @@ import { randomUUID } from "crypto";
 import { convertPlace } from "./convertPlace.js";
 import { latLonToTileXY } from "../utils/mercator.js";
 
+const enemyOdds = () => {
+  const r = Math.random();
+  if (r < 0.7) return 0;
+  if (r < 0.97) return 1;
+  return 2;
+};
+
 class EnemyTile {
-  constructor(extent = 4096, enemyCount = 100, enemyRespawnTime = 30) {
+  constructor(extent = 4096, enemyCount = 75, enemyRespawnTime = 30) {
     this.extent = extent;
     this.expiryTime = Date.now() + enemyRespawnTime * 60 * 1000;
     this.enemies = Array.from({ length: enemyCount }, () => ({
       id: randomUUID(),
       x: Math.floor(Math.random() * (extent + 1)),
       y: Math.floor(Math.random() * (extent + 1)),
-      enemyType: Math.floor(Math.random() * 3),
+      enemyType: enemyOdds(),
     }));
   }
 
