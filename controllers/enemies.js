@@ -4,8 +4,8 @@ import { latLonToTileXY } from "../utils/mercator.js";
 
 const enemyOdds = () => {
   const r = Math.random();
-  if (r < 0.7) return 0;
-  if (r < 0.97) return 1;
+  if (r < 0.6) return 0;
+  if (r < 0.85) return 1;
   return 2;
 };
 
@@ -22,12 +22,8 @@ class EnemyTile {
       id: randomUUID(),
       x: Math.floor(Math.random() * (extent + 1)),
       y: Math.floor(Math.random() * (extent + 1)),
-      enemyType: enemyOdds(),
+      enemyType: tuxMode ? 3 : enemyOdds(),
     }));
-
-    if (tuxMode) {
-      this.enemyType = 3;
-    }
   }
 
   isExpired() {
@@ -36,6 +32,15 @@ class EnemyTile {
 }
 
 const trackedPlaces = new Map();
+
+export const resetTrackedEnemies = async (req, res, next) => {
+  try {
+    trackedPlaces.clear();
+    res.send("Success!");
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const getEnemiesFromTile = async (req, res, next) => {
   try {
@@ -74,7 +79,7 @@ export const getEnemiesFromTile = async (req, res, next) => {
           !cityTilesMap.has(tileKey) ||
           cityTilesMap.get(tileKey).isExpired()
         ) {
-          if (tuxMode) {
+          if (tuxMode === "true") {
             cityTilesMap.set(tileKey, new EnemyTile(4096, 75, 30, true));
           } else {
             cityTilesMap.set(tileKey, new EnemyTile());
