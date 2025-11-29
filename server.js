@@ -95,6 +95,20 @@ wss.on("connection", (ws, req) => {
           pvp_lobby = [];
           current_turn = 0;
         }
+      } if (parsed && parsed.type === "position_lobby_update") {
+        let payload = {
+          type: "position_lobby_update",
+          update_type: parsed.update,
+          id: ws.id || "unknown user",
+          name: parsed.name,
+          color: parsed.color,
+          lon: parsed.lon,
+          lat: parsed.lat,
+          level: parsed.level,
+        };
+
+        console.log(`Broadcasting Payload - ${JSON.stringify(payload)}`);
+        broadcast(JSON.stringify(payload));
       } else {
       console.log(`New message - ${message}`);
       broadcast(message)
